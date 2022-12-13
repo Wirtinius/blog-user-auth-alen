@@ -12,7 +12,6 @@ from sqlalchemy import create_engine
 from functools import wraps
 from flask import abort
 from sqlalchemy.ext.declarative import declarative_base
-from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
