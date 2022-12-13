@@ -38,13 +38,13 @@ def admin(function):
     return fun
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-engine = create_engine('sqlite:///blog.db')
+engine = create_engine(os.getenv("DATABASE_URL", "sqlite:///blog.db"))
 session = Session(engine)
 
 
