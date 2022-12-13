@@ -88,7 +88,7 @@ class Comment(db.Model, Base):
     blogs_comments = relationship("BlogPost", back_populates="comments")
     text = db.Column(db.Text, nullable=False)
 
-    # db.create_all()
+db.create_all()
 
 
 @app.route('/')
