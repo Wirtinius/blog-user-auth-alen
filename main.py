@@ -38,7 +38,7 @@ def admin(function):
     return fun
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://blog_auth_prj_database_user:yslcg5hQb0O8GSjj8SNTjjgog3MBcDuJ@dpg-cecagl9gp3jg4tersjh0-a/blog_auth_prj_database'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
