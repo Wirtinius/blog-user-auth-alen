@@ -12,10 +12,10 @@ from sqlalchemy import create_engine
 from functools import wraps
 from flask import abort
 from sqlalchemy.ext.declarative import declarative_base
-
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = 'jarwfkajnwfkjnaw'
 ckeditor = CKEditor(app)
 Bootstrap(app)
 gravatar = Gravatar(app,
