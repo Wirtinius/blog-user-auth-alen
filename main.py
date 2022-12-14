@@ -15,7 +15,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = 'ewrfnirawu4hiqufrnwa2ne'
 ckeditor = CKEditor(app)
 Bootstrap(app)
 gravatar = Gravatar(app,
