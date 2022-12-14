@@ -66,27 +66,28 @@ class User(UserMixin, db.Model, Base):
     comments = relationship("Comment", back_populates="author_comments")
 
 
-class BlogPost(db.Model, Base):
-    __tablename__ = "blog_posts"
-    id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    author = relationship("User", back_populates="blogs")
-    comments = relationship("Comment", back_populates="blogs_comments")
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    subtitle = db.Column(db.String(250), nullable=False)
-    date = db.Column(db.String(250), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    img_url = db.Column(db.String(250), nullable=False)
+with app.app_context():
 
+    class BlogPost(db.Model, Base):
+        __tablename__ = "blog_posts"
+        id = db.Column(db.Integer, primary_key=True)
+        author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+        author = relationship("User", back_populates="blogs")
+        comments = relationship("Comment", back_populates="blogs_comments")
+        title = db.Column(db.String(250), unique=True, nullable=False)
+        subtitle = db.Column(db.String(250), nullable=False)
+        date = db.Column(db.String(250), nullable=False)
+        body = db.Column(db.Text, nullable=False)
+        img_url = db.Column(db.String(250), nullable=False)
 
-class Comment(db.Model, Base):
-    __tablename__ = "comments"
-    id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    blog_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
-    author_comments = relationship("User", back_populates="comments")
-    blogs_comments = relationship("BlogPost", back_populates="comments")
-    text = db.Column(db.Text, nullable=False)
+    class Comment(db.Model, Base):
+        __tablename__ = "comments"
+        id = db.Column(db.Integer, primary_key=True)
+        author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+        blog_id = db.Column(db.Integer, db.ForeignKey('blog_posts.id'))
+        author_comments = relationship("User", back_populates="comments")
+        blogs_comments = relationship("BlogPost", back_populates="comments")
+        text = db.Column(db.Text, nullable=False)
 
 # db.create_all()
 
