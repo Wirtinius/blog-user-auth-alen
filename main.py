@@ -13,6 +13,7 @@ from functools import wraps
 from flask import abort
 from sqlalchemy.ext.declarative import declarative_base
 import os
+import re
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ewrfnirawu4hiqufrnwa2ne'
@@ -38,7 +39,10 @@ def admin(function):
     return fun
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///blog.db")
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(uri, "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
