@@ -155,17 +155,18 @@ def show_post(post_id):
         is_admin = True
     requested_post = BlogPost.query.get(post_id)
     if form.validate_on_submit():
-        comment = Comment(
-            text=form.user_comment.data,
-            author_comments=current_user,
-            blogs_comments=requested_post,
-        )
-        flash(message="To leave a comment, you need to login first!", category="error")
         if not current_user.is_authenticated:
-            redirect(url_for('login'))
-        db.session.add(comment)
-        db.session.commit()
-        form.user_comment.data = ''
+            flash(message="To leave a comment, you need to login first!", category="error")
+            return redirect(url_for('login'))
+        else:
+            comment = Comment(
+                text=form.user_comment.data,
+                author_comments=current_user,
+                blogs_comments=requested_post,
+            )
+            db.session.add(comment)
+            db.session.commit()
+            form.user_comment.data = ''
     return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated, admin=is_admin, form=form)
 
 
@@ -232,4 +233,4 @@ def delete_post(post_id):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, host='0.0.0.0', debug=False)
+    app.run(port=5000, host='0.0.0.0', debug=True)
