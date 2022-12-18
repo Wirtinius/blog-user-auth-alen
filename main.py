@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, jsonify
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
@@ -13,6 +13,7 @@ from functools import wraps
 from flask import abort
 from sqlalchemy.ext.declarative import declarative_base
 import os
+import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ewrfnirawu4hiqufrnwa2ne'
@@ -79,6 +80,14 @@ with app.app_context():
         date = db.Column(db.String(250), nullable=False)
         body = db.Column(db.Text, nullable=False)
         img_url = db.Column(db.String(250), nullable=False)
+
+        def create_dict(self):
+            # dict_cafes= {}
+            # for column in self.__table__.columns:
+            #     dict_cafes[column.name] = getattr(self, column.name)
+            # return dict_cafes
+            dict_cafes = {column.name: getattr(self, column.name) for column in self.__table__.columns}
+            return dict_cafes
 
     class Comment(db.Model, Base):
         __tablename__ = "comments"
@@ -230,6 +239,22 @@ def delete_post(post_id):
     db.session.delete(post_to_delete)
     db.session.commit()
     return redirect(url_for('get_all_posts'))
+
+
+@app.route("/random")
+def get_random_cafe():
+    all_cafes = db.session.query(BlogPost).all()
+    random_blog = random.choice(all_cafes)
+    json_text = jsonify(random_blog.create_dict())
+    return json_text
+
+
+@app.route("/all")
+def get_all_cafes():
+    all_cafes = db.session.query(BlogPost).all()
+    dict_cafes = [blog.create_dict() for blog in all_cafes]
+    json_text = jsonify(dict_cafes)
+    return json_text
 
 
 if __name__ == "__main__":
