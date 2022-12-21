@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, redirect, url_for, flash, jsonify, request, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
 from datetime import date
@@ -10,10 +10,11 @@ from forms import CreatePostForm, CreateNewUser, LoginUser, CommentForm
 from flask_gravatar import Gravatar
 from sqlalchemy import create_engine
 from functools import wraps
-from flask import abort
 from sqlalchemy.ext.declarative import declarative_base
 import os
 import random
+import ipapi
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ewrfnirawu4hiqufrnwa2ne'
@@ -28,6 +29,10 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
+def ajsr():
+    def fun():
+        return fun() + "f"
+    return fun()
 
 def admin(function):
     @wraps(function)
@@ -50,6 +55,7 @@ session = Session(engine)
 
 
 @login_manager.user_loader
+
 def get_user(id):
     return User.query.get(int(id))
 
@@ -101,16 +107,7 @@ with app.app_context():
 # db.create_all()
 
 
-@app.route('/')
-def get_all_posts():
-    posts = BlogPost.query.all()
-    is_admin = False
-    admin = User.query.filter_by(id=1).first()
-    if current_user == admin:
-        is_admin = True
-    return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated, admin=is_admin)
-
-
+# User
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = CreateNewUser()
@@ -155,6 +152,17 @@ def logout():
     return redirect(url_for('get_all_posts'))
 
 
+# Posts
+@app.route('/')
+def get_all_posts():
+    posts = BlogPost.query.all()
+    is_admin = False
+    admin = User.query.filter_by(id=1).first()
+    if current_user == admin:
+        is_admin = True
+    return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated, admin=is_admin)
+
+
 @app.route("/post/<int:post_id>", methods=['GET', 'POST'])
 def show_post(post_id):
     form = CommentForm()
@@ -179,7 +187,7 @@ def show_post(post_id):
     return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated, admin=is_admin, form=form)
 
 
-
+# Pages
 @app.route("/about")
 def about():
     return render_template("about.html", logged_in=current_user.is_authenticated)
@@ -190,6 +198,7 @@ def contact():
     return render_template("contact.html", logged_in=current_user.is_authenticated)
 
 
+# Maintaining posts
 @app.route("/new-post", methods=['GET', 'POST'])
 @admin
 def add_new_post():
@@ -240,7 +249,7 @@ def delete_post(post_id):
     db.session.commit()
     return redirect(url_for('get_all_posts'))
 
-
+# API
 @app.route("/random")
 def get_random_cafe():
     all_cafes = db.session.query(BlogPost).all()
@@ -255,6 +264,19 @@ def get_all_cafes():
     dict_cafes = [blog.create_dict() for blog in all_cafes]
     json_text = jsonify(dict_cafes)
     return json_text
+
+
+@app.route("/get_my_ip", methods=["GET", "POST"])
+def get_my_ip():
+    data = ipapi.location(ip=request.remote_addr, output='json')
+    return render_template('IP.html', data=data)
+
+
+@app.route('/get_my_ip', methods=['GET', 'POST'])
+def proxy_client():
+    ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+    data = ipapi.location(ip=ip_addr, output='json')
+    return render_template('IP.html', data=data)
 
 
 if __name__ == "__main__":
