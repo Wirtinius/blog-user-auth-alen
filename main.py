@@ -266,18 +266,18 @@ def get_all_cafes():
     return json_text
 
 
-@app.route("/get_my_ip", methods=["GET", "POST"])
-def get_my_ip():
-    data = ipapi.location(ip=request.remote_addr, output='json')
-    return render_template('IP.html', data=data)
-
-
-@app.route('/get_my_ip', methods=['GET', 'POST'])
-def proxy_client():
-    ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
-    data = ipapi.location(ip=ip_addr, output='json')
-    return render_template('IP.html', data=data)
+# @app.route("/get_my_ip", methods=["GET", "POST"])
+# def get_my_ip():
+#     data = ipapi.location(ip=request.remote_addr, output='json')
+#     return render_template('IP.html', data=data)
+#
+#
+# @app.route('/get_my_ip', methods=['GET', 'POST'])
+# def proxy_client():
+#     ip_addr = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+#     data = ipapi.location(ip=ip_addr, output='json')
+#     return render_template('IP.html', data=data)
 
 
 if __name__ == "__main__":
-    app.run(port=80, host='0.0.0.0', debug=True)
+    app.run(port=5000, host='0.0.0.0', debug=True)
