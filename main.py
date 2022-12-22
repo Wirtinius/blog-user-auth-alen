@@ -29,10 +29,6 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
-def ajsr():
-    def fun():
-        return fun() + "f"
-    return fun()
 
 def admin(function):
     @wraps(function)
@@ -55,7 +51,6 @@ session = Session(engine)
 
 
 @login_manager.user_loader
-
 def get_user(id):
     return User.query.get(int(id))
 
