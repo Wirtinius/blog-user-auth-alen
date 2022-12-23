@@ -99,7 +99,7 @@ with app.app_context():
         blogs_comments = relationship("BlogPost", back_populates="comments")
         text = db.Column(db.Text, nullable=False)
 
-# db.create_all()
+    db.create_all()
 
 
 # User
@@ -275,4 +275,4 @@ def proxy_client():
 
 
 if __name__ == "__main__":
-    app.run(port=5000, host='0.0.0.0', debug=True)
+    app.run(port=4900, host='0.0.0.0', debug=True)
